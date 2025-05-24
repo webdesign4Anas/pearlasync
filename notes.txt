@@ -1,0 +1,78 @@
+1- python -m venv venv    created the environment for my appplication
+2-installed fastapi[all] and psycop2 and alembic then alembic init alembic
+* dont forget to create __init__.py inside app folder
+3-created app folder inside it models,schemas,config,database
+4- modfied the alembic ini and alembic .env
+5- after finishing the database stuff now install 
+6- pip install python-jose[cryptography] passlib[bcrypt]
+7-make utils.py and put the logic on it #pwd_context
+8-make the routers folder and inside it put the routers you want eg (auth.py,users.py)
+9-inside those import apirouter from fastapi then make router=apirouter(prefix,tags)
+
+------------ async notes -------------
+1-# With expire_on_commit=False
+user = await session.get(User, 1)
+user.name = "New Name"
+await session.commit()
+print(user.name)  # Works fine - "New Name"
+
+# With expire_on_commit=True (default)
+user = await session.get(User, 1)
+user.name = "New Name"
+await session.commit()
+print(user.name)  # Triggers new SQL query to refresh the data
+2. autoflush=False
+What it does:
+
+Controls whether the session automatically flushes pending changes before executing queries
+
+When False (as in your case):
+
+You must explicitly call session.flush() to send pending changes to the database
+
+Queries won't see unflushed changes from the same session
+
+More predictable behavior, especially in complex transactions
+
+When True (default in SQLAlchemy):
+
+Before any query executes, SQLAlchemy automatically flushes all pending changes
+
+Makes the session behave more intuitively but can lead to unexpected flushes
+
+Can cause performance issues if flushes happen too frequently
+
+Example:
+
+python
+# With autoflush=True (default)
+user = User(name="Alice")
+session.add(user)
+# This query will automatically flush the pending user insert
+existing = session.execute(select(User).where(User.name == "Alice")).scalar()
+
+# With autoflush=False
+user = User(name="Alice")
+session.add(user)
+# This query WON'T see the new user until you explicitly flush
+existing = session.execute(select(User).where(User.name == "Alice")).scalar()  # None
+await session.flush()
+existing = session.execute(select(User).where(User.name == "Alice")).scalar()  # Now works
+Why you might want these settings:
+
+expire_on_commit=False is common in web apps where you want to use objects after commit
+
+autoflush=False gives you more control over when database writes happen
+
+Both can improve performance by reducing unnecessary database operations
+
+Both make session behavior more explicit and predictable
+
+In web applications (especially with FastAPI), these settings are often preferred because they provide a better balance between convenience and explicit control.
+#
+The key takeaway: flush() sends SQL to the database, but only commit() makes it permanent and visible to others.
+----
+
+
+
+test + ngingx + deployment
