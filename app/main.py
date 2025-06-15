@@ -1,14 +1,14 @@
 from fastapi import  FastAPI,APIRouter,status
-from fastapi import FastAPI
-from app.routers import users,auth,register_routes,wishlist,services,admin,payment,notifications,purchases
+
+from app.routers import auth, login, users,wishlist,services,admin,payment,notifications,purchases
 app=FastAPI()
 
 
 
 
 app.include_router(users.router)
+app.include_router(login.router)
 app.include_router(auth.router)
-app.include_router(register_routes.router)
 app.include_router(wishlist.router)
 app.include_router(services.router)
 app.include_router(admin.router)

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession,async_sessionmaker
-from sqlalchemy.orm import declarative_base,sessionmaker
+from sqlalchemy.orm import declarative_base
 from app.config import settings
 
 SQL_ALCHEMY_URL=f"postgresql+asyncpg://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"

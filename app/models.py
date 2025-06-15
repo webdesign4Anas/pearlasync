@@ -99,7 +99,7 @@ class Purchase(Base):
     service_id=Column(Integer,ForeignKey("services.id",ondelete="CASCADE"))
     user_id=Column(Integer,ForeignKey("users.id",ondelete="CASCADE"))
     amount=Column(Float,nullable=False)
-    commision=Column(Float,nullable=False)
+    commission=Column(Float,nullable=False)
     booking_date=Column(Date,nullable=True)
     created_at=Column(TIMESTAMP(timezone=True),server_default=text("now()"))
     user=relationship("Users")

@@ -1,4 +1,4 @@
-from pydantic import BaseModel,EmailStr,HttpUrl
+from pydantic import BaseModel,EmailStr
 from typing import Optional,Literal,List
 from datetime import datetime
 
@@ -12,8 +12,12 @@ class TokenData(BaseModel):
 
 
 class Token(BaseModel):
-    access_token:str
-    token_type:str
+    access_token: str
+    token_type: str
+    role: str
+    id: int
+    class Config:
+        from_attributes = True # In Pydantic v2, formerly orm_mode=True
 
 class UserCreate(BaseModel):
     email:EmailStr
@@ -43,12 +47,16 @@ class ServiceCreate(BaseModel):
 
 class ServiceOut(ServiceCreate):
     id: int
+    name: str
+    description: str
+    price: float
+    category: str
     owner_id: int
-    created_at: datetime
-    images: List[ServiceImageOut] = []
+    image_preview_url: Optional[str] = None
 
     class Config:
-        from_attributes = True    
+        orm_mode = True
+
 
 class CreateServiceImage(BaseModel):
     image_url:str
@@ -67,10 +75,11 @@ class WishListItem(BaseModel):
     service_id:int
 
 class WishListItemOut(BaseModel):
-    service_id:int
-    service:ServiceSummaryOut
+    id: int
+    service: ServiceOut
+
     class Config:
-        from_attributes=True
+        orm_mode = True
 
 class PaymentRequest(BaseModel):
     card_nubmer:str
@@ -112,7 +121,7 @@ class PurchaseOut(BaseModel):
     id:int
     user_id:int
     service_id:int
-    commision:float
+    commission:float
     amount:float
     booking_date:Optional[datetime]
     created_at:datetime
