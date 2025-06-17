@@ -1,0 +1,43 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "7000:7000"
+    volumes:
+      # This is the key fix: Mount the entire project directory ('.')
+      # to the WORKDIR defined in the Dockerfile ('/pearl').
+      # This enables live-reloading.
+      - .:/pearl
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    # It's good practice to give your container a specific name
+    container_name: pearl_api_web
+
+  redis:
+    image: redis:7-alpine
+    container_name: pearl_api_redis
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    container_name: pearl_api_db
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
